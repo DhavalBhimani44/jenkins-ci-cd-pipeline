@@ -2,35 +2,54 @@ pipeline {
     agent {
         docker {
             image 'node:18'
+            args '-u root:root'
         }
     }
+    environment {
+        APP_NAME = 'node-ci-demo'
+        PORT = '3000'
+    }
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/DhavalBhimani44/jenkins-ci-cd-pipeline'
-            }
-        }
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
         }
+
         stage('Build') {
             steps {
-                echo 'No build step for simple Node app!'
+                echo 'No build step for this simple app'
             }
         }
+
         stage('Test') {
             steps {
-                echo 'No tests defined yet!'
+                echo 'No test step yet'
             }
         }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-                sh 'docker build -t node-ci-demo .'
-                sh 'docker run -d -p 3000:3000 --name ci-demo-app node-ci-demo'
+
+        stage('Docker Build and Deploy') {
+            // run this step from Jenkins host, not inside docker
+            agent {
+                label 'docker-host'
             }
+            steps {
+                sh '''
+                    echo "Building Docker image..."
+                    docker build -t $APP_NAME .
+
+                    echo "Stopping previous container..."
+                    docker rm -f $APP_NAME || true
+
+                    echo "Running new container..."
+                    docker run -d -p $PORT:$PORT --name $APP_NAME $APP_NAME
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
