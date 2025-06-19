@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-username/jenkins-docker-cicd.git'
+                git 'https://github.com/DhavalBhimani44/jenkins-ci-cd-pipeline'
             }
         }
         stage('Install Dependencies') {
