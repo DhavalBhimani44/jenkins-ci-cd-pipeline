@@ -17,12 +17,12 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo 'No build step for simple Node app'
+                echo 'No build step for simple Node app!'
             }
         }
         stage('Test') {
             steps {
-                echo 'No tests defined yet'
+                echo 'No tests defined yet!'
             }
         }
         stage('Deploy') {
