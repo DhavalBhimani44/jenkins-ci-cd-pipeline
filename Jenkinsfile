@@ -29,10 +29,6 @@ pipeline {
         }
 
         stage('Docker Build and Deploy') {
-            // run this step from Jenkins host, not inside docker
-            agent {
-                label 'docker-host'
-            }
             steps {
                 sh '''
                     echo "Building Docker image..."
@@ -46,6 +42,7 @@ pipeline {
                 '''
             }
         }
+
     }
     post {
         always {
